@@ -28,8 +28,10 @@ const learning = [
 
 export function Sidebar() {
   const location = useLocation();
-  const { user, logout } = useAuth();
+  const { user, profile, logout } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
+  
+  const displayName = profile?.full_name || user?.email?.split('@')[0] || 'Usuário';
 
   const NavLink = ({ item }: { item: typeof navigation[0] }) => {
     const isActive = location.pathname === item.href;
@@ -115,12 +117,12 @@ export function Sidebar() {
             <div className="flex items-center gap-3 px-4 py-3">
               <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
                 <span className="text-sm font-semibold text-primary">
-                  {user?.name?.charAt(0).toUpperCase() || 'U'}
+                  {displayName.charAt(0).toUpperCase()}
                 </span>
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-foreground truncate">
-                  {user?.name || 'Usuário'}
+                  {displayName}
                 </p>
                 <p className="text-xs text-muted-foreground truncate">
                   {user?.email || ''}

@@ -20,13 +20,13 @@ export default function Login() {
       return;
     }
 
-    const success = await login(email, password);
+    const result = await login(email, password);
     
-    if (success) {
+    if (result.success) {
       toast.success('Login realizado com sucesso!');
       navigate('/dashboard');
     } else {
-      toast.error('Credenciais inválidas. Tente novamente.');
+      toast.error(result.error || 'Credenciais inválidas. Tente novamente.');
     }
   };
 

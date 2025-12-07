@@ -19,14 +19,14 @@ interface ResourcesResponse {
 }
 
 export function useResources() {
-  const { apiToken } = useAuth();
+  const { session } = useAuth();
   const [resources, setResources] = useState<Resource[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function fetchResources() {
-      if (!apiToken) {
+      if (!session) {
         setIsLoading(false);
         return;
       }
@@ -37,7 +37,7 @@ export function useResources() {
 
         const response = await fetch('https://musicatos.vercel.app/api/resources', {
           headers: {
-            'Authorization': `Bearer ${apiToken}`,
+            'Authorization': `Bearer ${session.access_token}`,
             'Content-Type': 'application/json',
           },
         });
@@ -71,7 +71,7 @@ export function useResources() {
     }
 
     fetchResources();
-  }, [apiToken]);
+  }, [session]);
 
   return { resources, isLoading, error };
 }
