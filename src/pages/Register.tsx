@@ -32,13 +32,16 @@ export default function Register() {
       return;
     }
 
-    const success = await register(name, email, password);
+    const result = await register(name, email, password);
     
-    if (success) {
+    if (result.success && !result.error) {
       toast.success('Conta criada com sucesso!');
       navigate('/dashboard');
+    } else if (result.success && result.error) {
+      // Email confirmation required
+      toast.info(result.error);
     } else {
-      toast.error('Erro ao criar conta. Tente novamente.');
+      toast.error(result.error || 'Erro ao criar conta. Tente novamente.');
     }
   };
 

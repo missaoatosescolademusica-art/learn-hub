@@ -1,120 +1,157 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { User, Session } from '@supabase/supabase-js';
+import { supabase } from '@/integrations/supabase/client';
 
-interface User {
-  email: string;
-  name: string;
+interface Profile {
+  id: string;
+  user_id: string;
+  full_name: string | null;
+  avatar_url: string | null;
 }
 
 interface AuthContextType {
   user: User | null;
-  apiToken: string | null;
+  session: Session | null;
+  profile: Profile | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (email: string, password: string) => Promise<boolean>;
-  register: (name: string, email: string, password: string) => Promise<boolean>;
-  logout: () => void;
+  login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  register: (name: string, email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const API_BASE = 'https://musicatos.vercel.app/api';
-
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  const [apiToken, setApiToken] = useState<string | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    // Check for saved session
-    const savedUser = localStorage.getItem('user');
-    const savedToken = localStorage.getItem('apiToken');
+  const fetchProfile = async (userId: string) => {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('user_id', userId)
+      .maybeSingle();
     
-    if (savedUser && savedToken) {
-      setUser(JSON.parse(savedUser));
-      setApiToken(savedToken);
+    if (!error && data) {
+      setProfile(data);
     }
-    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    // Set up auth state listener FIRST
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setSession(session);
+        setUser(session?.user ?? null);
+        
+        // Defer profile fetch with setTimeout to avoid deadlock
+        if (session?.user) {
+          setTimeout(() => {
+            fetchProfile(session.user.id);
+          }, 0);
+        } else {
+          setProfile(null);
+        }
+        
+        setIsLoading(false);
+      }
+    );
+
+    // THEN check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      
+      if (session?.user) {
+        fetchProfile(session.user.id);
+      }
+      
+      setIsLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
-  const login = async (email: string, password: string): Promise<boolean> => {
+  const login = async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
     try {
       setIsLoading(true);
       
-      const response = await fetch(`${API_BASE}/auth/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
       });
 
-      if (!response.ok) {
-        throw new Error('Credenciais inválidas');
+      if (error) {
+        if (error.message.includes('Invalid login credentials')) {
+          return { success: false, error: 'Email ou senha inválidos' };
+        }
+        return { success: false, error: error.message };
       }
 
-      const data = await response.json();
-      const token = data.token || data.accessToken || data.access_token;
-      
-      if (token) {
-        const userData = { email, name: email.split('@')[0] };
-        setUser(userData);
-        setApiToken(token);
-        localStorage.setItem('user', JSON.stringify(userData));
-        localStorage.setItem('apiToken', token);
-        return true;
-      }
-      
-      return false;
+      return { success: true };
     } catch (error) {
       console.error('Login error:', error);
-      return false;
+      return { success: false, error: 'Erro ao fazer login. Tente novamente.' };
     } finally {
       setIsLoading(false);
     }
   };
 
-  const register = async (name: string, email: string, password: string): Promise<boolean> => {
-    // For demo purposes, we'll simulate registration
-    // In a real app, you'd call the registration endpoint
+  const register = async (name: string, email: string, password: string): Promise<{ success: boolean; error?: string }> => {
     try {
       setIsLoading(true);
       
-      // Simulate successful registration
-      const userData = { email, name };
-      setUser(userData);
+      const redirectUrl = `${window.location.origin}/`;
       
-      // Try to get a token by logging in
-      const loginSuccess = await login(email, password);
-      
-      if (!loginSuccess) {
-        // If login fails, just store user locally for demo
-        localStorage.setItem('user', JSON.stringify(userData));
-        localStorage.setItem('apiToken', 'demo-token');
-        setApiToken('demo-token');
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: redirectUrl,
+          data: {
+            full_name: name,
+          },
+        },
+      });
+
+      if (error) {
+        if (error.message.includes('User already registered')) {
+          return { success: false, error: 'Este email já está cadastrado' };
+        }
+        return { success: false, error: error.message };
       }
-      
-      return true;
+
+      // Check if email confirmation is required
+      if (data.user && !data.session) {
+        return { success: true, error: 'Verifique seu email para confirmar o cadastro' };
+      }
+
+      return { success: true };
     } catch (error) {
       console.error('Register error:', error);
-      return false;
+      return { success: false, error: 'Erro ao criar conta. Tente novamente.' };
     } finally {
       setIsLoading(false);
     }
   };
 
-  const logout = () => {
+  const logout = async () => {
+    await supabase.auth.signOut();
     setUser(null);
-    setApiToken(null);
-    localStorage.removeItem('user');
-    localStorage.removeItem('apiToken');
+    setSession(null);
+    setProfile(null);
   };
 
   return (
     <AuthContext.Provider
       value={{
         user,
-        apiToken,
-        isAuthenticated: !!user && !!apiToken,
+        session,
+        profile,
+        isAuthenticated: !!user && !!session,
         isLoading,
         login,
         register,
