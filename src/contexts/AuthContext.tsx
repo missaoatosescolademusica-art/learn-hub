@@ -1,6 +1,31 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { User, Session } from '@supabase/supabase-js';
-import { supabase } from '@/integrations/supabase/client';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
+import { authClient } from "../auth";
+
+// Define types based on Better Auth / Neon Auth structure
+interface User {
+  id: string;
+  email: string;
+  name: string;
+  emailVerified: boolean;
+  image?: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+interface Session {
+  id: string;
+  expiresAt: Date;
+  ipAddress?: string;
+  userAgent?: string;
+  userId: string;
+}
 
 interface Profile {
   id: string;
@@ -15,8 +40,15 @@ interface AuthContextType {
   profile: Profile | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
-  register: (name: string, email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  login: (
+    email: string,
+    password: string
+  ) => Promise<{ success: boolean; error?: string }>;
+  register: (
+    name: string,
+    email: string,
+    password: string
+  ) => Promise<{ success: boolean; error?: string }>;
   logout: () => Promise<void>;
 }
 
@@ -25,124 +57,120 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
-  const [profile, setProfile] = useState<Profile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const fetchProfile = async (userId: string) => {
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('user_id', userId)
-      .maybeSingle();
-    
-    if (!error && data) {
-      setProfile(data);
-    }
-  };
+  // Derive profile from user for backward compatibility
+  const profile: Profile | null = user
+    ? {
+        id: user.id,
+        user_id: user.id,
+        full_name: user.name,
+        avatar_url: user.image || null,
+      }
+    : null;
 
   useEffect(() => {
-    // Set up auth state listener FIRST
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        setSession(session);
-        setUser(session?.user ?? null);
-        
-        // Defer profile fetch with setTimeout to avoid deadlock
-        if (session?.user) {
-          setTimeout(() => {
-            fetchProfile(session.user.id);
-          }, 0);
+    const initAuth = async () => {
+      try {
+        const { data } = await authClient.getSession();
+        if (data) {
+          setSession(data.session as unknown as Session);
+          setUser(data.user as unknown as User);
         } else {
-          setProfile(null);
+          setSession(null);
+          setUser(null);
         }
-        
+      } catch (error) {
+        console.error("Auth initialization error:", error);
+      } finally {
         setIsLoading(false);
       }
-    );
-
-    // THEN check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      
-      if (session?.user) {
-        fetchProfile(session.user.id);
-      }
-      
-      setIsLoading(false);
-    });
-
-    return () => subscription.unsubscribe();
+    };
+    initAuth();
   }, []);
 
-  const login = async (email: string, password: string): Promise<{ success: boolean; error?: string }> => {
+  const login = async (
+    email: string,
+    password: string
+  ): Promise<{ success: boolean; error?: string }> => {
     try {
       setIsLoading(true);
-      
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await authClient.signIn.email({
         email,
         password,
       });
 
       if (error) {
-        if (error.message.includes('Invalid login credentials')) {
-          return { success: false, error: 'Email ou senha inválidos' };
-        }
-        return { success: false, error: error.message };
+        return {
+          success: false,
+          error: error.message || "Email ou senha inválidos",
+        };
+      }
+
+      const sessionData = await authClient.getSession();
+      if (sessionData.data) {
+        setSession(sessionData.data.session as unknown as Session);
+        setUser(sessionData.data.user as unknown as User);
       }
 
       return { success: true };
-    } catch (error) {
-      console.error('Login error:', error);
-      return { success: false, error: 'Erro ao fazer login. Tente novamente.' };
+    } catch (error: any) {
+      console.error("Login error:", error);
+      return {
+        success: false,
+        error: error.message || "Erro ao fazer login. Tente novamente.",
+      };
     } finally {
       setIsLoading(false);
     }
   };
 
-  const register = async (name: string, email: string, password: string): Promise<{ success: boolean; error?: string }> => {
+  const register = async (
+    name: string,
+    email: string,
+    password: string
+  ): Promise<{ success: boolean; error?: string }> => {
     try {
       setIsLoading(true);
-      
-      const redirectUrl = `${window.location.origin}/`;
-      
-      const { data, error } = await supabase.auth.signUp({
+      const { data, error } = await authClient.signUp.email({
         email,
         password,
-        options: {
-          emailRedirectTo: redirectUrl,
-          data: {
-            full_name: name,
-          },
-        },
+        name,
       });
 
       if (error) {
-        if (error.message.includes('User already registered')) {
-          return { success: false, error: 'Este email já está cadastrado' };
-        }
-        return { success: false, error: error.message };
+        return {
+          success: false,
+          error: error.message || "Erro ao criar conta",
+        };
       }
 
-      // Check if email confirmation is required
-      if (data.user && !data.session) {
-        return { success: true, error: 'Verifique seu email para confirmar o cadastro' };
+      const sessionData = await authClient.getSession();
+      if (sessionData.data) {
+        setSession(sessionData.data.session as unknown as Session);
+        setUser(sessionData.data.user as unknown as User);
       }
 
       return { success: true };
-    } catch (error) {
-      console.error('Register error:', error);
-      return { success: false, error: 'Erro ao criar conta. Tente novamente.' };
+    } catch (error: any) {
+      console.error("Register error:", error);
+      return {
+        success: false,
+        error: error.message || "Erro ao criar conta. Tente novamente.",
+      };
     } finally {
       setIsLoading(false);
     }
   };
 
   const logout = async () => {
-    await supabase.auth.signOut();
-    setUser(null);
-    setSession(null);
-    setProfile(null);
+    try {
+      await authClient.signOut();
+      setUser(null);
+      setSession(null);
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
   };
 
   return (
@@ -151,7 +179,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         user,
         session,
         profile,
-        isAuthenticated: !!user && !!session,
+        isAuthenticated: !!user,
         isLoading,
         login,
         register,
@@ -166,7 +194,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 }

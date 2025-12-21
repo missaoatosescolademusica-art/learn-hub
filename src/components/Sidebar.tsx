@@ -74,8 +74,8 @@ export function Sidebar() {
       {/* Sidebar */}
       <aside
         className={cn(
-          'fixed left-0 top-0 z-40 h-screen w-64 bg-sidebar border-r border-sidebar-border transition-transform duration-300 lg:translate-x-0',
-          isOpen ? 'translate-x-0' : '-translate-x-full'
+          "fixed left-0 top-0 z-40 h-screen w-64 bg-sidebar border-r border-sidebar-border transition-transform duration-300 lg:translate-x-0",
+          isOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
         <div className="flex flex-col h-full">
@@ -84,7 +84,9 @@ export function Sidebar() {
             <div className="w-10 h-10 rounded-lg gradient-primary flex items-center justify-center">
               <BookOpen className="h-5 w-5 text-primary-foreground" />
             </div>
-            <span className="text-xl font-bold text-foreground">EduPlay</span>
+            <span className="text-xl font-bold text-foreground">
+              MissãoPlay
+            </span>
           </div>
 
           {/* Navigation */}
@@ -125,7 +127,7 @@ export function Sidebar() {
                   {displayName}
                 </p>
                 <p className="text-xs text-muted-foreground truncate">
-                  {user?.email || ''}
+                  {user?.email || ""}
                 </p>
               </div>
               <button
