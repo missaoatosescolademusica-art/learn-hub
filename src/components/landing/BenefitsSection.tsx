@@ -1,5 +1,6 @@
 import { benefits } from "@/helpers/content-delivery-data";
-import { CheckCircle, Link, ArrowRight, Play } from "lucide-react";
+import { CheckCircle, ArrowRight, Play } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
 export const BenefitsSection = () => {

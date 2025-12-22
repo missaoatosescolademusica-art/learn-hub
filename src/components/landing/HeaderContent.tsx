@@ -1,6 +1,6 @@
 import { BookOpen } from "lucide-react";
 
-import { Link } from "lucide-react";
+import { Link } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
 
@@ -19,7 +19,7 @@ export default function HeaderContent() {
           <Button variant="ghost">Entrar</Button>
         </Link>
         <Link to="/registro">
-          <Button variant="hero">Criar conta</Button>
+          <Button variant="default">Criar conta</Button>
         </Link>
       </div>
     </div>
