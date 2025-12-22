@@ -5,7 +5,7 @@ export const FeaturesData = () => {
     <div className="container mx-auto max-w-6xl">
       <div className="text-center mb-16">
         <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-          Por que escolher o Missão Play?
+          Por que escolher o Musicatos Hub?
         </h2>
         <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
           Uma plataforma completa e gratuita para você desenvolver suas

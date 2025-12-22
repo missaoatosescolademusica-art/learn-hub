@@ -48,7 +48,7 @@ export default function Login() {
               <BookOpen className="h-6 w-6 text-primary-foreground" />
             </div>
             <span className="text-2xl font-bold text-foreground">
-              Missão Play
+              Musicatos Hub
             </span>
           </div>
 
