@@ -13,8 +13,8 @@ export const BenefitsSection = () => {
             <span className="text-gradient">evoluir</span>
           </h2>
           <p className="text-lg text-muted-foreground mb-8">
-            Nossa plataforma oferece recursos completos para você aprender de
-            forma eficiente e organizada.
+            Nossa plataforma oferece recursos completos para você aprender
+            musica de forma eficiente e organizada.
           </p>
 
           <ul className="space-y-4">

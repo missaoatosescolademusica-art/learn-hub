@@ -26,8 +26,7 @@ export default function HeroInfo({ videoAulasRef }: HeroInfoProps) {
       </h1>
 
       <p className="hero-element opacity-0 text-lg md:text-xl text-muted-foreground mb-10 max-w-2xl mx-auto">
-        Acesse centenas de aulas de alta qualidade, construa seu portfólio e
-        acelere sua carreira na tecnologia.
+        Acesse aulas de musica com alta qualidade para te ajudar na prática'.
       </p>
 
       <div className="hero-element opacity-0 flex flex-col sm:flex-row gap-4 justify-center">

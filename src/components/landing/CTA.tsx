@@ -11,8 +11,7 @@ export const CTA = () => {
             Pronto para começar?
           </h2>
           <p className="text-lg text-muted-foreground mb-8 max-w-xl mx-auto">
-            Junte-se a milhares de alunos que já estão aprendendo na nossa
-            plataforma.
+            Junte-se a nova turma de alunos que vão se tornar músicos talentosos para a igreja.
           </p>
           <Link to="/registro">
             <Button variant="hero" size="xl">

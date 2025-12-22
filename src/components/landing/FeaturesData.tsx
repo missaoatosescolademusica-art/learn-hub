@@ -9,7 +9,7 @@ export const FeaturesData = () => {
         </h2>
         <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
           Uma plataforma completa e gratuita para você desenvolver suas
-          habilidades
+          habilidades musicais de forma prática e interativa.
         </p>
       </div>
 
