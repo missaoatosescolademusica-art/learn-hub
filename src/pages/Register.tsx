@@ -3,15 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/contexts/AuthContext';
-import {
-  BookOpen,
-  Mail,
-  Lock,
-  User,
-  ArrowLeft,
-  Loader2,
-  GuitarIcon,
-} from "lucide-react";
+import { Mail, Lock, User, ArrowLeft, Loader2, BookOpen } from "lucide-react";
 import { toast } from "sonner";
 
 export default function Register() {
@@ -59,7 +51,11 @@ export default function Register() {
       <div className="hidden lg:flex flex-1 items-center justify-center p-12 gradient-primary relative overflow-hidden">
         <div className="relative z-10 text-center max-w-md">
           <div className="flex justify-center">
-            <GuitarIcon className="h-32 w-32 text-center text-primary-foreground mb-4" />
+            <img
+              src="/Logo.jpg"
+              alt="Musicatos Hub"
+              className="h-56 w-56 rounded-full object-cover mb-4"
+            />
           </div>
           <span className="text-4xl font-black text-primary-foreground mb-12">
             Musicatos Hub
@@ -89,10 +85,12 @@ export default function Register() {
           </Link>
 
           <div className="flex items-center gap-3 mb-8">
-            <div className="w-12 h-12 rounded-xl gradient-primary flex items-center justify-center">
-              <BookOpen className="h-6 w-6 text-primary-foreground" />
+            <div className="w-10 h-10 rounded-lg gradient-primary flex items-center justify-center">
+              <BookOpen className="h-5 w-5 text-primary-foreground" />
             </div>
-            <span className="text-2xl font-bold text-foreground">EduPlay</span>
+            <span className="text-2xl font-bold text-foreground">
+              Musicatos Hub
+            </span>
           </div>
 
           <h1 className="text-3xl font-bold text-foreground mb-2">

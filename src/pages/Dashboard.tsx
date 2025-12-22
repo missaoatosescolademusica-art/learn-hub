@@ -1,7 +1,7 @@
 import { Sidebar } from '@/components/Sidebar';
 import { VideoCard } from '@/components/VideoCard';
 import { useResources } from '@/hooks/useResources';
-import { Search, Loader2, BookOpen } from 'lucide-react';
+import { Search, Loader2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { useState } from 'react';
 
@@ -50,7 +50,11 @@ export default function Dashboard() {
           ) : filteredResources.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20">
               <div className="w-20 h-20 rounded-full bg-secondary flex items-center justify-center mb-6">
-                <BookOpen className="h-10 w-10 text-muted-foreground" />
+                <img
+                  src="/Logo.jpg"
+                  alt="Musicatos Hub"
+                  className="h-12 w-12 rounded-full object-cover"
+                />
               </div>
               <h3 className="text-xl font-semibold text-foreground mb-2">
                 {searchQuery ? 'Nenhuma aula encontrada' : 'Nenhuma aula disponível'}

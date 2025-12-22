@@ -3,30 +3,38 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/contexts/AuthContext';
-import { BookOpen, Mail, Lock, ArrowLeft, Loader2 } from 'lucide-react';
-import { toast } from 'sonner';
+import {
+  Mail,
+  Lock,
+  ArrowLeft,
+  Loader2,
+  BookOpen,
+  ArrowUpRight,
+  ListChecks,
+} from "lucide-react";
+import { toast } from "sonner";
 
 export default function Login() {
   const navigate = useNavigate();
   const { login, isLoading } = useAuth();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!email || !password) {
-      toast.error('Por favor, preencha todos os campos');
+      toast.error("Por favor, preencha todos os campos");
       return;
     }
 
     const result = await login(email, password);
-    
+
     if (result.success) {
-      toast.success('Login realizado com sucesso!');
-      navigate('/dashboard');
+      toast.success("Login realizado com sucesso!");
+      navigate("/dashboard");
     } else {
-      toast.error(result.error || 'Credenciais inválidas. Tente novamente.');
+      toast.error(result.error || "Credenciais inválidas. Tente novamente.");
     }
   };
 
@@ -44,8 +52,8 @@ export default function Login() {
           </Link>
 
           <div className="flex items-center gap-3 mb-8">
-            <div className="w-12 h-12 rounded-xl gradient-primary flex items-center justify-center">
-              <BookOpen className="h-6 w-6 text-primary-foreground" />
+            <div className="w-10 h-10 rounded-lg gradient-primary flex items-center justify-center">
+              <BookOpen className="h-5 w-5 text-primary-foreground" />
             </div>
             <span className="text-2xl font-bold text-foreground">
               Musicatos Hub
@@ -133,7 +141,17 @@ export default function Login() {
       {/* Right side - Decorative */}
       <div className="hidden lg:flex flex-1 items-center justify-center p-12 gradient-primary relative overflow-hidden">
         <div className="relative z-10 text-center max-w-md">
-          <h2 className="text-4xl font-bold text-primary-foreground mb-4">
+          <div className="flex justify-center">
+            <img
+              src="/Logo.jpg"
+              alt="Musicatos Hub"
+              className="h-56 w-56 rounded-full object-cover mb-4"
+            />
+          </div>
+          <span className="text-4xl font-black text-primary-foreground mb-12">
+            Musicatos Hub
+          </span>
+          <h2 className="text-2xl font-medium text-primary-foreground mt-4 mb-4 flex items-center justify-center">
             Continue sua jornada
           </h2>
           <p className="text-primary-foreground/80 text-lg">
