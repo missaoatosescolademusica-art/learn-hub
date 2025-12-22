@@ -6,7 +6,7 @@ import HeaderContent from "@/components/landing/HeaderContent";
 import HeroInfo from "@/components/landing/HeroInfo";
 import { FeaturesData } from "@/components/landing/FeaturesData";
 import { BenefitsSection } from "@/components/landing/BenefitsSection";
-import { CTA } from "@/components/landing/cta";
+import { CTA } from "@/components/landing/CTA";
 
 export default function Landing() {
   const videoAulasRef = useRef<HTMLSpanElement>(null);
