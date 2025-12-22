@@ -3,45 +3,53 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/contexts/AuthContext';
-import { BookOpen, Mail, Lock, User, ArrowLeft, Loader2 } from 'lucide-react';
-import { toast } from 'sonner';
+import {
+  BookOpen,
+  Mail,
+  Lock,
+  User,
+  ArrowLeft,
+  Loader2,
+  GuitarIcon,
+} from "lucide-react";
+import { toast } from "sonner";
 
 export default function Register() {
   const navigate = useNavigate();
   const { register, isLoading } = useAuth();
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!name || !email || !password || !confirmPassword) {
-      toast.error('Por favor, preencha todos os campos');
+      toast.error("Por favor, preencha todos os campos");
       return;
     }
 
     if (password !== confirmPassword) {
-      toast.error('As senhas não coincidem');
+      toast.error("As senhas não coincidem");
       return;
     }
 
     if (password.length < 6) {
-      toast.error('A senha deve ter pelo menos 6 caracteres');
+      toast.error("A senha deve ter pelo menos 6 caracteres");
       return;
     }
 
     const result = await register(name, email, password);
-    
+
     if (result.success && !result.error) {
-      toast.success('Conta criada com sucesso!');
-      navigate('/dashboard');
+      toast.success("Conta criada com sucesso!");
+      navigate("/dashboard");
     } else if (result.success && result.error) {
       // Email confirmation required
       toast.info(result.error);
     } else {
-      toast.error(result.error || 'Erro ao criar conta. Tente novamente.');
+      toast.error(result.error || "Erro ao criar conta. Tente novamente.");
     }
   };
 
@@ -50,14 +58,18 @@ export default function Register() {
       {/* Left side - Decorative */}
       <div className="hidden lg:flex flex-1 items-center justify-center p-12 gradient-primary relative overflow-hidden">
         <div className="relative z-10 text-center max-w-md">
-          <h2 className="text-4xl font-bold text-primary-foreground mb-4">
+          <GuitarIcon className="h-12 w-12 text-primary-foreground mb-4" />
+          <span className="text-4xl font-bold text-primary-foreground mb-4">
+            Musicatos Hub
+          </span>
+          <h2 className="text-2xl font-bold text-primary-foreground mb-4">
             Comece sua jornada
           </h2>
           <p className="text-primary-foreground/80 text-lg">
             Cadastre-se gratuitamente e tenha acesso a centenas de aulas.
           </p>
         </div>
-        
+
         {/* Decorative circles */}
         <div className="absolute top-20 left-20 w-64 h-64 rounded-full bg-primary-foreground/10 blur-3xl" />
         <div className="absolute bottom-20 right-20 w-80 h-80 rounded-full bg-primary-foreground/5 blur-3xl" />
@@ -90,7 +102,10 @@ export default function Register() {
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="space-y-2">
-              <label htmlFor="name" className="text-sm font-medium text-foreground">
+              <label
+                htmlFor="name"
+                className="text-sm font-medium text-foreground"
+              >
                 Nome completo
               </label>
               <div className="relative">
@@ -107,7 +122,10 @@ export default function Register() {
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="email" className="text-sm font-medium text-foreground">
+              <label
+                htmlFor="email"
+                className="text-sm font-medium text-foreground"
+              >
                 E-mail
               </label>
               <div className="relative">
@@ -124,7 +142,10 @@ export default function Register() {
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="password" className="text-sm font-medium text-foreground">
+              <label
+                htmlFor="password"
+                className="text-sm font-medium text-foreground"
+              >
                 Senha
               </label>
               <div className="relative">
@@ -141,7 +162,10 @@ export default function Register() {
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="confirmPassword" className="text-sm font-medium text-foreground">
+              <label
+                htmlFor="confirmPassword"
+                className="text-sm font-medium text-foreground"
+              >
                 Confirmar senha
               </label>
               <div className="relative">
@@ -170,14 +194,17 @@ export default function Register() {
                   Criando conta...
                 </>
               ) : (
-                'Criar conta grátis'
+                "Criar conta grátis"
               )}
             </Button>
           </form>
 
           <p className="mt-8 text-center text-muted-foreground">
-            Já tem uma conta?{' '}
-            <Link to="/login" className="text-primary hover:underline font-medium">
+            Já tem uma conta?{" "}
+            <Link
+              to="/login"
+              className="text-primary hover:underline font-medium"
+            >
               Faça login
             </Link>
           </p>
