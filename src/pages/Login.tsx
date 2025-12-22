@@ -47,7 +47,9 @@ export default function Login() {
             <div className="w-12 h-12 rounded-xl gradient-primary flex items-center justify-center">
               <BookOpen className="h-6 w-6 text-primary-foreground" />
             </div>
-            <span className="text-2xl font-bold text-foreground">EduPlay</span>
+            <span className="text-2xl font-bold text-foreground">
+              Missão Play
+            </span>
           </div>
 
           <h1 className="text-3xl font-bold text-foreground mb-2">
@@ -59,7 +61,10 @@ export default function Login() {
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <label htmlFor="email" className="text-sm font-medium text-foreground">
+              <label
+                htmlFor="email"
+                className="text-sm font-medium text-foreground"
+              >
                 E-mail
               </label>
               <div className="relative">
@@ -76,7 +81,10 @@ export default function Login() {
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="password" className="text-sm font-medium text-foreground">
+              <label
+                htmlFor="password"
+                className="text-sm font-medium text-foreground"
+              >
                 Senha
               </label>
               <div className="relative">
@@ -105,14 +113,17 @@ export default function Login() {
                   Entrando...
                 </>
               ) : (
-                'Entrar'
+                "Entrar"
               )}
             </Button>
           </form>
 
           <p className="mt-8 text-center text-muted-foreground">
-            Não tem uma conta?{' '}
-            <Link to="/registro" className="text-primary hover:underline font-medium">
+            Não tem uma conta?{" "}
+            <Link
+              to="/registro"
+              className="text-primary hover:underline font-medium"
+            >
               Cadastre-se grátis
             </Link>
           </p>
@@ -129,7 +140,7 @@ export default function Login() {
             Retome seus estudos de onde parou e alcance seus objetivos.
           </p>
         </div>
-        
+
         {/* Decorative circles */}
         <div className="absolute top-20 right-20 w-64 h-64 rounded-full bg-primary-foreground/10 blur-3xl" />
         <div className="absolute bottom-20 left-20 w-80 h-80 rounded-full bg-primary-foreground/5 blur-3xl" />
