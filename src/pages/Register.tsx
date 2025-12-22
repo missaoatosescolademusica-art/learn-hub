@@ -58,11 +58,13 @@ export default function Register() {
       {/* Left side - Decorative */}
       <div className="hidden lg:flex flex-1 items-center justify-center p-12 gradient-primary relative overflow-hidden">
         <div className="relative z-10 text-center max-w-md">
-          <GuitarIcon className="h-12 w-12 text-primary-foreground mb-4" />
-          <span className="text-4xl font-bold text-primary-foreground mb-4">
+          <div className="flex justify-center">
+            <GuitarIcon className="h-32 w-32 text-center text-primary-foreground mb-4" />
+          </div>
+          <span className="text-4xl font-black text-primary-foreground mb-12">
             Musicatos Hub
           </span>
-          <h2 className="text-2xl font-bold text-primary-foreground mb-4">
+          <h2 className="text-2xl font-medium text-primary-foreground mt-2 mb-4">
             Comece sua jornada
           </h2>
           <p className="text-primary-foreground/80 text-lg">
