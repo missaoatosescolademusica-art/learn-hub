@@ -20,6 +20,7 @@ interface User {
 }
 
 interface Session {
+  [x: string]: any;
   id: string;
   expiresAt: Date;
   ipAddress?: string;

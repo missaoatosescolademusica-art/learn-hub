@@ -6,6 +6,7 @@ export interface Resource {
   type: string;
   path: string;
   originalName: string;
+  categoryPath: string;
   size: number | null;
   createdAt: string;
   updatedAt: string;
@@ -35,34 +36,38 @@ export function useResources() {
         setIsLoading(true);
         setError(null);
 
-        const response = await fetch('https://musicatos.vercel.app/api/resources', {
-          headers: {
-            'Authorization': `Bearer ${session.access_token}`,
-            'Content-Type': 'application/json',
-          },
-        });
+        const response = await fetch(
+          "https://musicatos.vercel.app/api/resources",
+          {
+            headers: {
+              Authorization: `Bearer ${session.access_token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
         if (!response.ok) {
-          throw new Error('Falha ao carregar recursos');
+          throw new Error("Falha ao carregar recursos");
         }
 
         const data: ResourcesResponse = await response.json();
         setResources(data.data || []);
       } catch (err) {
-        console.error('Error fetching resources:', err);
-        setError(err instanceof Error ? err.message : 'Erro desconhecido');
-        
+        console.error("Error fetching resources:", err);
+        setError(err instanceof Error ? err.message : "Erro desconhecido");
+
         // Demo data for testing
         setResources([
           {
-            id: 'demo-1',
-            type: 'youtube',
-            path: 'https://www.youtube.com/watch?v=GJC9zdMG1UQ',
-            originalName: 'Aula Demonstrativa',
+            id: "demo-1",
+            type: "youtube",
+            path: "https://www.youtube.com/watch?v=GJC9zdMG1UQ",
+            originalName: "Aula Demonstrativa",
+            categoryPath: "Aula de musica",
             size: null,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
-            createdById: 'demo',
+            createdById: "demo",
           },
         ]);
       } finally {

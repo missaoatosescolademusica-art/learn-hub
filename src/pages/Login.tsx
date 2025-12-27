@@ -11,6 +11,8 @@ import {
   BookOpen,
   ArrowUpRight,
   ListChecks,
+  EyeOff,
+  Eye,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -18,6 +20,7 @@ export default function Login() {
   const navigate = useNavigate();
   const { login, isLoading } = useAuth();
   const [email, setEmail] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -99,12 +102,24 @@ export default function Login() {
                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                 <Input
                   id="password"
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="pl-12"
                 />
+                <Button
+                  type="button"
+                  variant="link"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-muted-foreground"
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-5 w-5" />
+                  ) : (
+                    <Eye className="h-5 w-5" />
+                  )}
+                </Button>
               </div>
             </div>
 

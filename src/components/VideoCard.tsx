@@ -46,20 +46,28 @@ export function VideoCard({ resource, index }: VideoCardProps) {
               }}
             />
           ) : (
-            <div className={cn('w-full h-full', gradients[index % gradients.length])} />
+            <div
+              className={cn(
+                "w-full h-full",
+                gradients[index % gradients.length]
+              )}
+            />
           )}
-          
+
           {/* Play overlay */}
           <div className="absolute inset-0 bg-background/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
             <div className="w-16 h-16 rounded-full bg-primary/90 flex items-center justify-center transform scale-75 group-hover:scale-100 transition-transform duration-300">
-              <Play className="h-7 w-7 text-primary-foreground ml-1" fill="currentColor" />
+              <Play
+                className="h-7 w-7 text-primary-foreground ml-1"
+                fill="currentColor"
+              />
             </div>
           </div>
 
           {/* Badge */}
           <div className="absolute top-3 right-3">
             <span className="px-3 py-1 text-xs font-semibold rounded-full bg-primary text-primary-foreground">
-              {resource.type.toUpperCase()}
+              {resource.categoryPath.toUpperCase()}
             </span>
           </div>
         </div>
@@ -67,9 +75,9 @@ export function VideoCard({ resource, index }: VideoCardProps) {
         {/* Content */}
         <div className="p-5">
           <h3 className="text-lg font-semibold text-foreground line-clamp-2 group-hover:text-primary transition-colors">
-            {resource.originalName || 'Aula sem título'}
+            {resource.originalName || "Aula sem título"}
           </h3>
-          
+
           <div className="flex items-center gap-4 mt-3 text-sm text-muted-foreground">
             <div className="flex items-center gap-1.5">
               <Calendar className="h-4 w-4" />
