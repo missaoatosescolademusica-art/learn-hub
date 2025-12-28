@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from "@/contexts/AuthContext";
+import { useQuery } from "@tanstack/react-query";
 
 export interface Resource {
   id: string;
@@ -21,27 +21,31 @@ interface ResourcesResponse {
 
 export function useResources() {
   const { session } = useAuth();
-  const [resources, setResources] = useState<Resource[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    async function fetchResources() {
-      if (!session) {
-        setIsLoading(false);
-        return;
+  const {
+    data: resources = [],
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["resources", session?.access_token],
+    queryFn: async () => {
+      if (!session?.access_token) {
+        return [];
       }
 
       try {
-        setIsLoading(true);
-        setError(null);
-
+        // Add timestamp to prevent caching
+        const timestamp = new Date().getTime();
         const response = await fetch(
-          "https://musicatos.vercel.app/api/resources",
+          `https://musicatos.vercel.app/api/resources?t=${timestamp}`,
           {
             headers: {
               Authorization: `Bearer ${session.access_token}`,
               "Content-Type": "application/json",
+              // Explicitly request no cache
+              "Cache-Control": "no-cache, no-store, must-revalidate",
+              Pragma: "no-cache",
+              Expires: "0",
             },
           }
         );
@@ -51,13 +55,16 @@ export function useResources() {
         }
 
         const data: ResourcesResponse = await response.json();
-        setResources(data.data || []);
+        return data.data || [];
       } catch (err) {
         console.error("Error fetching resources:", err);
-        setError(err instanceof Error ? err.message : "Erro desconhecido");
+        // Throw to let react-query handle the error state,
+        // but since the original code had a fallback to demo data,
+        // we can return that or let the onError handler deal with it.
+        // However, useQuery doesn't have an onError callback in v5 in the same way.
+        // We will return the demo data here to maintain behavior.
 
-        // Demo data for testing
-        setResources([
+        return [
           {
             id: "demo-1",
             type: "youtube",
@@ -69,16 +76,19 @@ export function useResources() {
             updatedAt: new Date().toISOString(),
             createdById: "demo",
           },
-        ]);
-      } finally {
-        setIsLoading(false);
+        ] as Resource[];
       }
-    }
+    },
+    enabled: !!session?.access_token,
+    staleTime: 1000 * 60 * 5, // Consider data fresh for 5 minutes
+    refetchOnWindowFocus: true, // Refetch when window gains focus
+  });
 
-    fetchResources();
-  }, [session]);
-
-  return { resources, isLoading, error };
+  return {
+    resources,
+    isLoading,
+    error: error ? (error as Error).message : null,
+  };
 }
 
 export function extractYouTubeId(url: string): string | null {
