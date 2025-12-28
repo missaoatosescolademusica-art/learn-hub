@@ -131,6 +131,7 @@ export function Sidebar() {
                 </p>
               </div>
               <button
+                type="button"
                 onClick={logout}
                 className="p-2 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
               >
