@@ -20,11 +20,13 @@ export function VideoCard({ resource, index }: VideoCardProps) {
     ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`
     : null;
 
-  const formattedDate = new Date(resource.createdAt).toLocaleDateString('pt-BR', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-  });
+  const formattedDate = resource.createdAt
+    ? new Date(resource.createdAt).toLocaleDateString("pt-BR", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      })
+    : "Data desconhecida";
 
   return (
     <Link

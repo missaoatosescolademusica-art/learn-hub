@@ -7,7 +7,14 @@ import { useState } from 'react';
 
 export default function Dashboard() {
   const { resources, isLoading, error } = useResources();
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
+
+  // Debug logs
+  console.log("[Dashboard] State:", {
+    resourcesCount: resources.length,
+    isLoading,
+    error,
+  });
 
   const filteredResources = resources.filter((resource) =>
     resource.originalName?.toLowerCase().includes(searchQuery.toLowerCase())
@@ -16,7 +23,7 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-background">
       <Sidebar />
-      
+
       <main className="lg:pl-64">
         <div className="p-6 lg:p-10">
           {/* Header */}
@@ -57,18 +64,24 @@ export default function Dashboard() {
                 />
               </div>
               <h3 className="text-xl font-semibold text-foreground mb-2">
-                {searchQuery ? 'Nenhuma aula encontrada' : 'Nenhuma aula disponível'}
+                {searchQuery
+                  ? "Nenhuma aula encontrada"
+                  : "Nenhuma aula disponível"}
               </h3>
               <p className="text-muted-foreground text-center max-w-md">
                 {searchQuery
-                  ? 'Tente buscar por outro termo'
-                  : 'As aulas serão exibidas aqui quando estiverem disponíveis'}
+                  ? "Tente buscar por outro termo"
+                  : "As aulas serão exibidas aqui quando estiverem disponíveis"}
               </p>
             </div>
           ) : (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {filteredResources.map((resource, index) => (
-                <VideoCard key={resource.id} resource={resource} index={index} />
+                <VideoCard
+                  key={resource.id}
+                  resource={resource}
+                  index={index}
+                />
               ))}
             </div>
           )}

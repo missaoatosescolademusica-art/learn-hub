@@ -29,47 +29,68 @@ export function useResources() {
   } = useQuery({
     queryKey: ["resources", session?.access_token],
     queryFn: async () => {
+      console.log("[useResources] Iniciando busca de recursos...");
       if (!session?.access_token) {
+        console.warn("[useResources] Token de acesso não disponível.");
         return [];
       }
 
       try {
         // Add timestamp to prevent caching
-        const timestamp = new Date().getTime();
-        const response = await fetch(
-          `https://musicatos.vercel.app/api/resources?t=${timestamp}`,
-          {
-            headers: {
-              Authorization: `Bearer ${session.access_token}`,
-              "Content-Type": "application/json",
-              // Explicitly request no cache
-              "Cache-Control": "no-cache, no-store, must-revalidate",
-              Pragma: "no-cache",
-              Expires: "0",
-            },
-          }
-        );
+
+        const url = `https://musicatos.vercel.app/api/resources`;
+        console.log(`[useResources] URL da requisição: ${url}`);
+
+        const response = await fetch(url, {
+          headers: {
+            Authorization: `Bearer ${import.meta.env.VITE_MUSICATOS_AUTH_TOKEN}`,
+            "Content-Type": "application/json",
+            // Explicitly request no cache
+            "Cache-Control": "no-cache, no-store, must-revalidate",
+            Pragma: "no-cache",
+            Expires: "0",
+          },
+        });
+
+        console.log(`[useResources] Status da resposta: ${response.status}`);
 
         if (!response.ok) {
-          throw new Error("Falha ao carregar recursos");
+          const errorText = await response.text();
+          console.error(
+            `[useResources] Erro na API: ${response.status} - ${errorText}`
+          );
+          throw new Error(`Falha ao carregar recursos: ${response.status}`);
         }
 
         const data: ResourcesResponse = await response.json();
-        return data.data || [];
+        console.log("[useResources] Dados recebidos:", data);
+
+        if (!data.data) {
+          console.warn(
+            "[useResources] Estrutura de dados inesperada: propriedade 'data' ausente",
+            data
+          );
+          return [];
+        }
+
+        return data.data;
       } catch (err) {
-        console.error("Error fetching resources:", err);
+        console.error("[useResources] Erro ao buscar recursos:", err);
         // Throw to let react-query handle the error state,
         // but since the original code had a fallback to demo data,
         // we can return that or let the onError handler deal with it.
         // However, useQuery doesn't have an onError callback in v5 in the same way.
         // We will return the demo data here to maintain behavior.
 
+        console.log(
+          "[useResources] Usando dados de demonstração devido a erro."
+        );
         return [
           {
             id: "demo-1",
             type: "youtube",
             path: "https://www.youtube.com/watch?v=GJC9zdMG1UQ",
-            originalName: "Aula Demonstrativa",
+            originalName: "Aula Demonstrativa (Fallback)",
             categoryPath: "Aula de musica",
             size: null,
             createdAt: new Date().toISOString(),
