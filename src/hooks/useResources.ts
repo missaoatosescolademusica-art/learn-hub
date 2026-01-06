@@ -1,49 +1,30 @@
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuery } from "@tanstack/react-query";
-
-export interface Resource {
-  id: string;
-  type: string;
-  path: string;
-  originalName: string;
-  categoryPath: string;
-  size: number | null;
-  createdAt: string;
-  updatedAt: string;
-  createdById: string;
-}
-
-interface ResourcesResponse {
-  data: Resource[];
-  page: number;
-  totalPages: number;
-}
+import { Resource, ResourcesResponse } from "@/types/resources";
 
 export function useResources() {
-  const { session } = useAuth();
-
   const {
     data: resources = [],
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["resources", session?.access_token],
+    queryKey: ["resources"],
     queryFn: async () => {
       console.log("[useResources] Iniciando busca de recursos...");
-      if (!session?.access_token) {
-        console.warn("[useResources] Token de acesso não disponível.");
-        return [];
-      }
 
       try {
         // Add timestamp to prevent caching
 
-        const url = `https://musicatos.vercel.app/api/resources`;
+        const isDev = import.meta.env.MODE === "development";
+        const baseUrl = isDev
+          ? "/api-external"
+          : "https://musicatos.vercel.app/api";
+        const url = `${baseUrl}/resources`;
+
         console.log(`[useResources] URL da requisição: ${url}`);
 
         const response = await fetch(url, {
           headers: {
-            Authorization: `Bearer ${import.meta.env.VITE_MUSICATOS_AUTH_TOKEN}`,
             "Content-Type": "application/json",
             // Explicitly request no cache
             "Cache-Control": "no-cache, no-store, must-revalidate",
@@ -100,7 +81,7 @@ export function useResources() {
         ] as Resource[];
       }
     },
-    enabled: !!session?.access_token,
+    enabled: true,
     staleTime: 1000 * 60 * 5, // Consider data fresh for 5 minutes
     refetchOnWindowFocus: true, // Refetch when window gains focus
   });

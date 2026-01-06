@@ -12,6 +12,7 @@ export default function Dashboard() {
   // Debug logs
   console.log("[Dashboard] State:", {
     resourcesCount: resources.length,
+    resources: resources,
     isLoading,
     error,
   });

@@ -1,30 +1,11 @@
 import { Link, useLocation } from 'react-router-dom';
-import { 
-  Home, 
-  BookOpen, 
-  Map, 
-  FolderOpen, 
-  Calendar, 
-  MessageCircle,
-  LogOut,
-  Menu,
-  X
-} from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { useAuth } from '@/contexts/AuthContext';
-import { useState } from 'react';
+import { BookOpen, LogOut, Menu, X } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { useAuth } from "@/contexts/AuthContext";
+import { useState } from "react";
+import { learning, navigation } from "@/helpers/sidebar-content";
 
-const navigation = [
-  { name: 'Home', href: '/dashboard', icon: Home },
-  { name: 'Meus Conteúdos', href: '/dashboard/conteudos', icon: BookOpen },
-  { name: 'Minha Jornada', href: '/dashboard/jornada', icon: Map },
-];
 
-const learning = [
-  { name: 'Catálogo', href: '/dashboard/catalogo', icon: FolderOpen },
-  { name: 'Aulas', href: '/dashboard/aulas', icon: Calendar },
-  { name: 'Comunidade', href: '/dashboard/comunidade', icon: MessageCircle },
-];
 
 export function Sidebar() {
   const location = useLocation();

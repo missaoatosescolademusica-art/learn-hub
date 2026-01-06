@@ -1,13 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { VideoProgress } from "@/types/video";
 
-interface VideoProgress {
-  video_id: string;
-  watched_seconds: number;
-  completed: boolean;
-  last_watched_at: string;
-}
+
 
 export function useVideoProgress(videoId?: string) {
   const { user } = useAuth();

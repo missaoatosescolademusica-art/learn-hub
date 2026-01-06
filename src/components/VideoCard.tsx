@@ -1,7 +1,8 @@
 import { Play, Clock, Calendar } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { Resource, extractYouTubeId } from '@/hooks/useResources';
-import { cn } from '@/lib/utils';
+import { Resource } from "@/types/resources";
+import { cn } from "@/lib/utils";
+import { extractYouTubeId } from "@/hooks/useResources";
 
 interface VideoCardProps {
   resource: Resource;
