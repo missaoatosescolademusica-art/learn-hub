@@ -56,7 +56,7 @@ export default function VideoLesson() {
     <div className="min-h-screen bg-background">
       <Sidebar />
 
-      <main className="lg:pl-64">
+      <main className="lg:pl-0">
         <div className="p-6 lg:p-10">
           {/* Back button */}
           <Link
