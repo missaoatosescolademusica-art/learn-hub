@@ -23,7 +23,7 @@ export interface Profile {
   id: string;
   user_id: string;
   full_name: string | null;
-  avatar_url: string | null;
+  image: string | null;
 }
 
 export interface AuthContextType {

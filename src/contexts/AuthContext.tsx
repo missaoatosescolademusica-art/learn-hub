@@ -22,7 +22,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         id: user.id,
         user_id: user.id,
         full_name: user.name,
-        avatar_url: user.image || null,
+        image: user.image || null,
       }
     : null;
 

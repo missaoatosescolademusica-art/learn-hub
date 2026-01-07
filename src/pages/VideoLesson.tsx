@@ -1,11 +1,11 @@
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { Sidebar } from '@/components/Sidebar';
 import { VideoPlayer } from '@/components/VideoPlayer';
-import { Resource } from '@/hooks/useResources';
-import { ArrowLeft, Calendar, CheckCircle, Bookmark } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { useState } from 'react';
-import { toast } from 'sonner';
+import { Resource } from "@/types/resources";
+import { ArrowLeft, Calendar, CheckCircle, Bookmark } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { toast } from "sonner";
 
 export default function VideoLesson() {
   const location = useLocation();
@@ -21,7 +21,7 @@ export default function VideoLesson() {
           <h2 className="text-2xl font-bold text-foreground mb-4">
             Aula não encontrada
           </h2>
-          <Button onClick={() => navigate('/dashboard')}>
+          <Button onClick={() => navigate("/dashboard")}>
             Voltar para o Dashboard
           </Button>
         </div>
@@ -29,26 +29,33 @@ export default function VideoLesson() {
     );
   }
 
-  const formattedDate = new Date(resource.createdAt).toLocaleDateString('pt-BR', {
-    day: '2-digit',
-    month: 'long',
-    year: 'numeric',
-  });
+  const formattedDate = new Date(resource.createdAt).toLocaleDateString(
+    "pt-BR",
+    {
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+    }
+  );
 
   const handleMarkComplete = () => {
     setIsCompleted(!isCompleted);
-    toast.success(isCompleted ? 'Aula desmarcada' : 'Aula marcada como assistida!');
+    toast.success(
+      isCompleted ? "Aula desmarcada" : "Aula marcada como assistida!"
+    );
   };
 
   const handleBookmark = () => {
     setIsBookmarked(!isBookmarked);
-    toast.success(isBookmarked ? 'Removido dos favoritos' : 'Adicionado aos favoritos!');
+    toast.success(
+      isBookmarked ? "Removido dos favoritos" : "Adicionado aos favoritos!"
+    );
   };
 
   return (
     <div className="min-h-screen bg-background">
       <Sidebar />
-      
+
       <main className="lg:pl-64">
         <div className="p-6 lg:p-10">
           {/* Back button */}
@@ -64,13 +71,13 @@ export default function VideoLesson() {
             {/* Video Player */}
             <div className="lg:col-span-2 space-y-6">
               <VideoPlayer url={resource.path} title={resource.originalName} />
-              
+
               {/* Video Info */}
               <div className="space-y-4">
                 <h1 className="text-2xl lg:text-3xl font-bold text-foreground">
-                  {resource.originalName || 'Aula sem título'}
+                  {resource.originalName || "Aula sem título"}
                 </h1>
-                
+
                 <div className="flex items-center gap-4 text-muted-foreground">
                   <div className="flex items-center gap-2">
                     <Calendar className="h-4 w-4" />
@@ -84,20 +91,25 @@ export default function VideoLesson() {
                 {/* Actions */}
                 <div className="flex gap-3 pt-4 border-t border-border">
                   <Button
-                    variant={isCompleted ? 'default' : 'outline'}
+                    variant={isCompleted ? "default" : "outline"}
                     onClick={handleMarkComplete}
                     className="gap-2"
                   >
                     <CheckCircle className="h-5 w-5" />
-                    {isCompleted ? 'Assistida' : 'Marcar como assistida'}
+                    {isCompleted ? "Assistida" : "Marcar como assistida"}
                   </Button>
                   <Button
                     variant="outline"
                     size="icon"
                     onClick={handleBookmark}
-                    className={isBookmarked ? 'text-primary border-primary' : ''}
+                    className={
+                      isBookmarked ? "text-primary border-primary" : ""
+                    }
                   >
-                    <Bookmark className="h-5 w-5" fill={isBookmarked ? 'currentColor' : 'none'} />
+                    <Bookmark
+                      className="h-5 w-5"
+                      fill={isBookmarked ? "currentColor" : "none"}
+                    />
                   </Button>
                 </div>
               </div>

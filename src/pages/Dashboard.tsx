@@ -1,9 +1,9 @@
-import { Sidebar } from '@/components/Sidebar';
-import { VideoCard } from '@/components/VideoCard';
-import { useResources } from '@/hooks/useResources';
-import { Search, Loader2 } from 'lucide-react';
-import { Input } from '@/components/ui/input';
-import { useState } from 'react';
+import { Sidebar } from "@/components/Sidebar";
+import { VideoCard } from "@/components/VideoCard";
+import { useResources } from "@/hooks/useResources";
+import { Search, Loader2 } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { useState } from "react";
 
 export default function Dashboard() {
   const { resources, isLoading, error } = useResources();
@@ -24,8 +24,8 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-background">
       <Sidebar />
-
       <main className="lg:pl-64">
+        {" "}
         <div className="p-6 lg:p-10">
           {/* Header */}
           <div className="mb-10">

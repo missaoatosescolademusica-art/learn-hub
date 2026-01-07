@@ -66,7 +66,7 @@ export function Sidebar() {
               <BookOpen className="h-5 w-5 text-primary-foreground" />
             </div>
             <span className="text-xl font-bold text-foreground">
-              MissãoPlay
+              Musicatos Hub
             </span>
           </div>
 

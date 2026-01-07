@@ -17,29 +17,106 @@ export type Database = {
       profiles: {
         Row: {
           avatar_url: string | null
+          bio: string | null
           created_at: string
+          cover_image_url: string | null
           full_name: string | null
           id: string
+          location: string | null
+          role: string | null
           updated_at: string
           user_id: string
         }
         Insert: {
           avatar_url?: string | null
+          bio?: string | null
           created_at?: string
+          cover_image_url?: string | null
           full_name?: string | null
           id?: string
+          location?: string | null
+          role?: string | null
           updated_at?: string
           user_id: string
         }
         Update: {
           avatar_url?: string | null
+          bio?: string | null
           created_at?: string
+          cover_image_url?: string | null
           full_name?: string | null
           id?: string
+          location?: string | null
+          role?: string | null
           updated_at?: string
           user_id?: string
         }
         Relationships: []
+      }
+      profile_links: {
+        Row: {
+          created_at: string
+          id: string
+          kind: "website" | "linkedin" | "instagram" | "twitter"
+          profile_id: string
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          kind: "website" | "linkedin" | "instagram" | "twitter"
+          profile_id: string
+          url: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          kind?: "website" | "linkedin" | "instagram" | "twitter"
+          profile_id?: string
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profile_links_profile_id_fkey"
+            columns: ["profile_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      profile_skills: {
+        Row: {
+          created_at: string
+          favorite: boolean
+          icon_name: string
+          id: string
+          name: string
+          profile_id: string
+        }
+        Insert: {
+          created_at?: string
+          favorite?: boolean
+          icon_name: string
+          id?: string
+          name: string
+          profile_id: string
+        }
+        Update: {
+          created_at?: string
+          favorite?: boolean
+          icon_name?: string
+          id?: string
+          name?: string
+          profile_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profile_skills_profile_id_fkey"
+            columns: ["profile_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       video_progress: {
         Row: {
@@ -70,6 +147,290 @@ export type Database = {
           watched_seconds?: number
         }
         Relationships: []
+      }
+      contents: {
+        Row: {
+          id: string
+          title: string
+          description: string | null
+          type: 'video' | 'course' | 'event' | 'extra'
+          category: string | null
+          thumbnail_url: string | null
+          video_url: string | null
+          duration_seconds: number | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          title: string
+          description?: string | null
+          type: 'video' | 'course' | 'event' | 'extra'
+          category?: string | null
+          thumbnail_url?: string | null
+          video_url?: string | null
+          duration_seconds?: number | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          title?: string
+          description?: string | null
+          type?: 'video' | 'course' | 'event' | 'extra'
+          category?: string | null
+          thumbnail_url?: string | null
+          video_url?: string | null
+          duration_seconds?: number | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_bookmarks: {
+        Row: {
+          id: string
+          user_id: string
+          content_id: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          content_id: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          content_id?: string
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_bookmarks_content_id_fkey"
+            columns: ["content_id"]
+            referencedRelation: "contents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_bookmarks_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      content_progress: {
+        Row: {
+          id: string
+          user_id: string
+          content_id: string
+          watched_seconds: number
+          is_completed: boolean
+          last_watched_at: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          content_id: string
+          watched_seconds?: number
+          is_completed?: boolean
+          last_watched_at?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          content_id?: string
+          watched_seconds?: number
+          is_completed?: boolean
+          last_watched_at?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "content_progress_content_id_fkey"
+            columns: ["content_id"]
+            referencedRelation: "contents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "content_progress_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      levels: {
+        Row: {
+          id: string
+          sequence_number: number
+          name: string
+          description: string | null
+          icon: string
+          is_published: boolean
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          sequence_number: number
+          name: string
+          description?: string | null
+          icon: string
+          is_published?: boolean
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          sequence_number?: number
+          name?: string
+          description?: string | null
+          icon?: string
+          is_published?: boolean
+          created_at?: string
+        }
+        Relationships: []
+      }
+      tasks: {
+        Row: {
+          id: string
+          level_id: string
+          sequence_number: number
+          title: string
+          description: string | null
+          task_type: 'setup' | 'deadline' | 'content' | 'quiz' | 'milestone'
+          content_id: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          level_id: string
+          sequence_number: number
+          title: string
+          description?: string | null
+          task_type: 'setup' | 'deadline' | 'content' | 'quiz' | 'milestone'
+          content_id?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          level_id?: string
+          sequence_number?: number
+          title?: string
+          description?: string | null
+          task_type?: 'setup' | 'deadline' | 'content' | 'quiz' | 'milestone'
+          content_id?: string | null
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tasks_level_id_fkey"
+            columns: ["level_id"]
+            referencedRelation: "levels"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tasks_content_id_fkey"
+            columns: ["content_id"]
+            referencedRelation: "contents"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      user_level_progress: {
+        Row: {
+          id: string
+          user_id: string
+          level_id: string
+          status: 'locked' | 'active' | 'completed'
+          unlocked_at: string | null
+          completed_at: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          level_id: string
+          status?: 'locked' | 'active' | 'completed'
+          unlocked_at?: string | null
+          completed_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          level_id?: string
+          status?: 'locked' | 'active' | 'completed'
+          unlocked_at?: string | null
+          completed_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_level_progress_level_id_fkey"
+            columns: ["level_id"]
+            referencedRelation: "levels"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_level_progress_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      user_task_progress: {
+        Row: {
+          id: string
+          user_id: string
+          task_id: string
+          status: 'pending' | 'completed'
+          completed_at: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          task_id: string
+          status?: 'pending' | 'completed'
+          completed_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          task_id?: string
+          status?: 'pending' | 'completed'
+          completed_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_task_progress_task_id_fkey"
+            columns: ["task_id"]
+            referencedRelation: "tasks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_task_progress_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
       }
     }
     Views: {

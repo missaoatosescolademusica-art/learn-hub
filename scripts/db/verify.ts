@@ -6,7 +6,7 @@ async function verify() {
     console.log('Verifying migration status...');
     
     // 1. Check if public tables exist
-    const tables = ['profiles', 'video_progress', 'users_mock'];
+    const tables = ['profiles', 'video_progress', 'users_mock', 'profile_links', 'profile_skills'];
     let allTablesExist = true;
 
     for (const table of tables) {
