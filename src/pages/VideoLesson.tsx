@@ -1,6 +1,6 @@
-import { useLocation, useNavigate, Link } from 'react-router-dom';
-import { Sidebar } from '@/components/Sidebar';
-import { VideoPlayer } from '@/components/VideoPlayer';
+import { useLocation, useNavigate, Link } from "react-router-dom";
+import { Sidebar } from "@/components/Sidebar";
+import { VideoPlayer } from "@/components/VideoPlayer";
 import { Resource } from "@/types/resources";
 import { ArrowLeft, Calendar, CheckCircle, Bookmark } from "lucide-react";
 import { Button } from "@/components/ui/button";
