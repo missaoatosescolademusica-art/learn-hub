@@ -58,7 +58,7 @@ export default function MyContents() {
       if (!profileData) return;
 
       // Load in-progress contents
-      const { data: progressData, error: progressError } = await supabase
+      const { data: progressData, error: progressError } = await (supabase as any)
         .from('content_progress')
         .select(`
           watched_seconds,
@@ -82,7 +82,7 @@ export default function MyContents() {
       if (progressError) throw progressError;
 
       // Load saved contents (bookmarks)
-      const { data: bookmarksData, error: bookmarksError } = await supabase
+      const { data: bookmarksData, error: bookmarksError } = await (supabase as any)
         .from('user_bookmarks')
         .select(`
           content:contents (
