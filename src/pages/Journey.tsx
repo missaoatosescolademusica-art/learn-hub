@@ -108,7 +108,7 @@ export default function Journey() {
 
     try {
       // 1. Fetch Tasks for Level
-      const { data: tasksData, error: tasksError } = await supabase
+      const { data: tasksData, error: tasksError } = await (supabase as any)
         .from('tasks')
         .select('*')
         .eq('level_id', levelId)
@@ -117,11 +117,11 @@ export default function Journey() {
       if (tasksError) throw tasksError;
 
       // 2. Fetch User Task Progress
-      const { data: taskProgress, error: progressError } = await supabase
+      const { data: taskProgress, error: progressError } = await (supabase as any)
         .from('user_task_progress')
         .select('*')
         .eq('user_id', user.id)
-        .in('task_id', tasksData.map(t => t.id));
+        .in('task_id', (tasksData || []).map((t: any) => t.id));
 
       if (progressError) throw progressError;
 
@@ -172,7 +172,7 @@ export default function Journey() {
         setIsLoading(true);
 
         // 1. Fetch Levels
-        const { data: levelsData, error: levelsError } = await supabase
+        const { data: levelsData, error: levelsError } = await (supabase as any)
           .from('levels')
           .select('*')
           .order('sequence_number');
@@ -180,7 +180,7 @@ export default function Journey() {
         if (levelsError) throw levelsError;
 
         // 2. Fetch User Level Progress
-        const { data: userProgress, error: progressError } = await supabase
+        const { data: userProgress, error: progressError } = await (supabase as any)
           .from('user_level_progress')
           .select('*')
           .eq('user_id', user.id);
@@ -238,7 +238,7 @@ export default function Journey() {
     // Example: Mark as completed or navigate to content
     // For now, let's just mark it as completed to show interaction
     try {
-      const { error } = await supabase.from('user_task_progress').upsert({
+      const { error } = await (supabase as any).from('user_task_progress').upsert({
         user_id: user.id,
         task_id: selectedTask.id,
         status: 'completed',

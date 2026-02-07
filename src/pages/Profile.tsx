@@ -144,7 +144,7 @@ export default function Profile() {
       if (uploadError) throw uploadError;
       const { data: publicData } = supabase.storage.from('avatars').getPublicUrl(path);
       const publicUrl = publicData.publicUrl;
-      const { error: updateError } = await supabase
+      const { error: updateError } = await (supabase as any)
         .from('profiles')
         .update({ avatar_url: publicUrl })
         .eq('user_id', user.id);
@@ -168,7 +168,7 @@ export default function Profile() {
         setIsLoading(true);
 
         // 1. Get Profile
-        const { data: profileData, error: profileError } = await supabase
+        const { data: profileData, error: profileError } = await (supabase as any)
           .from('profiles')
           .select('*')
           .eq('user_id', user.id)
@@ -180,7 +180,7 @@ export default function Profile() {
         }
 
         // 2. Get Links
-        const { data: linksData, error: linksError } = await supabase
+        const { data: linksData, error: linksError } = await (supabase as any)
           .from('profile_links')
           .select('*')
           .eq('profile_id', profileData?.id);
@@ -188,7 +188,7 @@ export default function Profile() {
         if (linksError) console.error('Error loading links:', linksError);
 
         // 3. Get Skills
-        const { data: skillsData, error: skillsError } = await supabase
+        const { data: skillsData, error: skillsError } = await (supabase as any)
           .from('profile_skills')
           .select('*')
           .eq('profile_id', profileData?.id);
@@ -272,7 +272,7 @@ export default function Profile() {
   const handleSaveSkills = async () => {
     try {
       // Get profile ID first
-      const { data: profileData } = await supabase
+      const { data: profileData } = await (supabase as any)
         .from('profiles')
         .select('id')
         .eq('user_id', user?.id)
@@ -287,21 +287,21 @@ export default function Profile() {
 
       // Delete removed skills
       if (toDelete.length > 0) {
-        await supabase.from('profile_skills').delete().in('id', toDelete);
+        await (supabase as any).from('profile_skills').delete().in('id', toDelete);
       }
 
       // Upsert current skills
       // We process one by one or batch, but we need to handle "new" ones (no ID) vs existing
       for (const skill of skillsTemp) {
         if (skill.id) {
-          // Update existing if needed (though we only really add/remove here currently, name/icon edit isn't UI supported yet)
-           await supabase
+          // Update existing
+           await (supabase as any)
             .from('profile_skills')
             .update({ name: skill.name, icon_name: skill.icon, favorite: skill.favorite || false })
             .eq('id', skill.id);
         } else {
           // Insert new
-          await supabase
+          await (supabase as any)
             .from('profile_skills')
             .insert({
               profile_id: profileData.id,
@@ -327,7 +327,7 @@ export default function Profile() {
 
   const handleSaveBio = async () => {
     try {
-      const { error } = await supabase
+      const { error } = await (supabase as any)
         .from('profiles')
         .update({ bio: bioTemp })
         .eq('user_id', user?.id);
@@ -345,7 +345,7 @@ export default function Profile() {
 
   const handleSaveLinks = async () => {
     try {
-      const { data: profileData } = await supabase
+      const { data: profileData } = await (supabase as any)
         .from('profiles')
         .select('id')
         .eq('user_id', user?.id)
@@ -357,7 +357,7 @@ export default function Profile() {
       for (const kind of linkKinds) {
         const url = linksTemp[kind];
         // Check if exists
-        const { data: existing } = await supabase
+        const { data: existing } = await (supabase as any)
           .from('profile_links')
           .select('id')
           .eq('profile_id', profileData.id)
@@ -366,12 +366,12 @@ export default function Profile() {
 
         if (existing) {
             if (url) {
-                await supabase.from('profile_links').update({ url }).eq('id', existing.id);
+                await (supabase as any).from('profile_links').update({ url }).eq('id', existing.id);
             } else {
-                await supabase.from('profile_links').delete().eq('id', existing.id);
+                await (supabase as any).from('profile_links').delete().eq('id', existing.id);
             }
         } else if (url) {
-            await supabase.from('profile_links').insert({
+            await (supabase as any).from('profile_links').insert({
                 profile_id: profileData.id,
                 kind,
                 url
@@ -461,7 +461,7 @@ export default function Profile() {
         newUrl = await toDataUrl(avatarFile);
         try { localStorage.setItem('pendingAvatar', newUrl); } catch (e) { void e; }
       }
-      const { error: updateError } = await supabase
+      const { error: updateError } = await (supabase as any)
         .from('profiles')
         .update({ avatar_url: newUrl })
         .eq('user_id', user.id);
