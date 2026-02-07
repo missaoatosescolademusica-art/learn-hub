@@ -116,12 +116,7 @@ export default function Profile() {
   const [isSavingAvatar, setIsSavingAvatar] = useState(false);
   const [isSyncingAvatar, setIsSyncingAvatar] = useState(false);
   const isDataUrl = (url?: string | null) => !!url && url.startsWith('data:');
-  const ensureBucket = async () => {
-    const { data } = await supabase.storage.getBucket('avatars');
-    if (!data) {
-      await supabase.storage.createBucket('avatars', { public: true });
-    }
-  };
+  // Bucket 'avatars' is created via Supabase migration, no need to create it client-side
   const syncPendingAvatar = useCallback(async () => {
     if (!user?.id || !navigator.onLine || isSyncingAvatar) return;
     try {
@@ -134,7 +129,7 @@ export default function Profile() {
       if (!dataUrl) return;
       const res = await fetch(dataUrl);
       const blob = await res.blob();
-      await ensureBucket();
+      // Bucket created via migration
       const ext = (blob.type?.split('/')[1]) || 'png';
       const path = `${user.id}/${Date.now()}.${ext}`;
       const { error: uploadError } = await supabase.storage.from('avatars').upload(path, blob, {
@@ -441,7 +436,7 @@ export default function Profile() {
           toast.success("Foto atualizada localmente (offline)");
           return;
         }
-        await ensureBucket();
+        // Bucket created via migration
         const ext = avatarFile.type.split('/')[1] || 'png';
         const path = `${user.id}/${Date.now()}.${ext}`;
         const { error: uploadError } = await supabase.storage.from('avatars').upload(path, avatarFile, {
